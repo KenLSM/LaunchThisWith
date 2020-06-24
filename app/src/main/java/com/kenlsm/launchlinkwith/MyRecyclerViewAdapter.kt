@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.content.pm.ResolveInfo
 import android.widget.ImageView
+import kotlinx.android.synthetic.main.list_view.view.*
 
 
-internal class MyRecycleViewAdapter(private val myDataset: List<ResolveInfo>) :
+internal class MyRecycleViewAdapter(
+        private val myDataset: List<PackageList>, private val setSelectedTarget: (Int, String) -> Unit) :
         RecyclerView.Adapter<MyRecycleViewAdapter.MyViewHolder>() {
 
 
@@ -36,11 +38,19 @@ internal class MyRecycleViewAdapter(private val myDataset: List<ResolveInfo>) :
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         val data = myDataset[position]
-        holder.title.text = data.activityInfo.packageName
-        holder.subtitle.text = data.activityInfo.name
-//        holder.icon.
+        holder.title.text = data.title
+        holder.subtitle.text = data.subtitle
+        holder.icon.setImageDrawable(data.icon)
+        holder.itemView.setOnClickListener(
+                object : View.OnClickListener {
+                    override fun onClick(view: View) {
+                        setSelectedTarget(position, data.title)
+                    }
+                }
+        )
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
+
 }
